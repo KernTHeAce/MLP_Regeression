@@ -1,8 +1,9 @@
 from Network import MLP
 from RK_Method import EquationsSystem
-from Training_Report import MLPDataSet as ds
+import datasets as ds
 from Activations import functions as func
-from Visualisation import visual2d, visual3d
+from Visualisation import visual2d, visual3ds
+import math
 
 
 def dx(x, y, z):
@@ -21,55 +22,29 @@ if __name__ == '__main__':
     dataset_size = 2000
     step = 0.01
 
+    input_size = 3
+
     functions = [func['sigma'], func['line']]
 
     constants = {
         'alpha': 0.01,
-        'lambda': 0.1,
-        'beta': 0.0,
+        'lambda': 0.5,
+        'beta': 0.99,
         'max_error': 0.001
     }
 
-    es = EquationsSystem(dx, dy, dz)
+    data = EquationsSystem(dx, dy, dz)
+    dataset = ds.EquationsSystemDataset(data, 2000)
 
-    network = MLP(3, 50, 3, functions)
-
-    data_dict = es.calculating(dataset_size, step)
-
-    dataset = ds(data_dict)
-    network.learning(dataset, constants)
-    network.report.error_visual()
-    result = network.forecasting(dataset.test_set)
-
-    x = []
-    y = []
-    z = []
-    for i in range(len(dataset.test_set)):
-        x.append(dataset.test_set[i][0])
-        y.append(dataset.test_set[i][1])
-        z.append(dataset.test_set[i][2])
+    visual3ds(dataset)
+    input()
+    #
+    # network = MLP(input_size, 8, 1, functions)
+    #
+    # dataset = ds(func1, dataset_size, 3)
+    # dataset.create_dataset(0.1)
+    #
+    # visual2d(dataset.learning_set['e'])
 
 
-    visual2d(x)
-    visual2d(y)
-    visual2d(z)
-
-    visual3d(x, y, z)
-
-    for i in range(len(result)):
-        x[i] = (result[i][0])
-        y[i] = (result[i][1])
-        z[i] = (result[i][2])
-
-    visual2d(x)
-    visual2d(y)
-    visual2d(z)
-
-    visual3d(x, y, z)
-
-    visual2d(data_dict['x'])
-    visual2d(data_dict['y'])
-    visual2d(data_dict['z'])
-
-    visual3d(data_dict['x'], data_dict['y'], data_dict['z'])
 

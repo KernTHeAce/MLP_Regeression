@@ -29,3 +29,16 @@ def visual3d(x, y, z):
     plt.show()
 
     #t = np.arange(0, size * step, step)
+
+def visual3ds(data):
+    x = []
+    y = []
+    z = []
+
+    for row in data['x']:
+        x.append(row[0])
+        y.append(row[1])
+        z.append(row[2])
+
+    visual3d(x, y, z)
+

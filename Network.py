@@ -28,20 +28,21 @@ class MLP:
 
         self.report = TR.Report()
 
-    def forecasting(self, dataset):
+    def forecasting(self, data_set):
         print('Forecasting...')
         result = []
-        for index in range(len(dataset) - 1):
-            X = dataset[index]
-            e = dataset[index + 1]
+        dataset = data_set.test_set
+        for index in range(data_set.test_size):
+            X = dataset['x'][index]
+            e = dataset['e'][index]
 
             calc_res = self.calculating(X)
             print(self.error(calc_res['Z'], e))
             result.append(calc_res['Z'])
         E = 0
-        for i in range(len(dataset) - 1):
-            X = dataset[i]
-            e = dataset[i + 1]
+        for i in range(data_set.test_size):
+            X = dataset['x'][index]
+            e = dataset['e'][index]
 
             calc_res = self.calculating(X)
             E += self.error(calc_res['Z'], e)
@@ -97,16 +98,16 @@ class MLP:
         while True:
             for index in range(len(dataset) - 1):
                 self.report.count()
-                X_train = copy.deepcopy(dataset[index])
-                e_train = dataset[index + 1]
+                X_train = dataset['x'][index]
+                e_train = dataset['e'][index]
 
                 calc_res = self.calculating(X_train)
                 self.modifying(calc_res, X_train, e_train, constants)
 
                 E = 0
                 for i in range(len(dataset) - 1):
-                    X_check = copy.deepcopy(dataset[i])
-                    e_check = dataset[i + 1]
+                    X_check = dataset['x'][index]
+                    e_check = dataset['e'][index]
 
                     calc_res = self.calculating(X_check)
                     E += self.error(calc_res['Z'], e_check)
@@ -115,7 +116,7 @@ class MLP:
                 print(E)
 
                 if E < constants['max_error']:
-                    #return 0
+                    return 0
                     a = 2
 
     def modifying(self, data, X, e, constants):

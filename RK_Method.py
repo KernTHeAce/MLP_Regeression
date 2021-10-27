@@ -1,11 +1,14 @@
 from Training_Report import data_transform
 
+
 class EquationsSystem:
     def __init__(self, dx_function, dy_function, dz_function):
 
         self.dx = dx_function
         self.dy = dy_function
         self.dz = dz_function
+
+        self.data = {}
 
     def calculating(self, num, h):
         x = [0.1]
@@ -43,6 +46,14 @@ class EquationsSystem:
             z.append(z_tmp)
 
         print('Done')
-        return {'x': data_transform(x), 'y': data_transform(y), 'z': data_transform(z)}
+
+        self.data = {'x': x, 'y': y, 'z': z}
+        return self.data
+
+    def __len__(self):
+        return len(self.data['x'])
+
+
+
 
 
