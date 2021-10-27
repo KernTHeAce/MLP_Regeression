@@ -5,7 +5,7 @@ class DataSet:
         self.validation_set = {}
 
     @staticmethod
-    def __data_transform(x):
+    def data_transform(x):
         x_min = min(x)
         x_max = max(x)
 
@@ -34,22 +34,26 @@ class EquationsSystemDataset(DataSet):
 
     def __init__(self, data, size, learn=0.8, test=0.2, validation=0, input_size=3):
         super().__init__()
-        self.learn_size = int(size * learn)
-        self.test_size = int(size * test)
-        self.validation_size = int(size * validation)
+        self.learn_size = int(size * learn) - input_size
+        self.test_size = int(size * test) - input_size
+        self.validation_size = int(size * validation) - input_size
 
         self.input_size = input_size
         self.data = data
+        self.full_set = {}
+        self.size = size
 
     def create_sets(self):
-        self.learning_set = self.__create_sets(self.data, self.learn_size, 0)
-        self.test_set = self.__create_sets(self.data, self.test_size, self.learn_size)
+        self.test_set = self.__create_sets(self.data, self.test_size, 0)
+        self.learning_set = self.__create_sets(self.data, self.learn_size, self.test_size)
         self.validation_set = self.__create_sets(self.data, self.validation_size, self.learn_size + self.test_size)
 
+        self.full_set = self.__create_sets(self.data, self.size - 3, 0)
+
     def data_transform(self):
-        self.data['x'] = self.__data_transform(self.data['x'])
-        self.data['y'] = self.__data_transform(self.data['y'])
-        self.data['z'] = self.__data_transform(self.data['z'])
+        self.data['x'] = super().data_transform(self.data['x'])
+        self.data['y'] = super().data_transform(self.data['y'])
+        self.data['z'] = super().data_transform(self.data['z'])
 
 
 class WindowingMethodDataSet(DataSet):
@@ -84,9 +88,11 @@ class WindowingMethodDataSet(DataSet):
         return result
 
     def data_transform(self):
-        self.data = self.__data_transform(self.data)
+        self.data = super().data_transform(self.data)
 
     def create_sets(self):
         self.learning_set = self.__create_set(self.learn_size, 0)
         self.test_set = self.__create_set(self.test_size, self.learn_size)
         self.validation_set = self.__create_set(self.validation_size, self.learn_size + self.test_size)
+
+

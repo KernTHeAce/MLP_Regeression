@@ -28,24 +28,19 @@ class MLP:
 
         self.report = TR.Report()
 
-    def forecasting(self, data_set):
+    def forecasting(self, dataset, dataset_size):
         print('Forecasting...')
         result = []
-        dataset = data_set.test_set
-        for index in range(data_set.test_size):
+        E = 0
+        for index in range(dataset_size):
             X = dataset['x'][index]
             e = dataset['e'][index]
 
             calc_res = self.calculating(X)
             print(self.error(calc_res['Z'], e))
             result.append(calc_res['Z'])
-        E = 0
-        for i in range(data_set.test_size):
-            X = dataset['x'][index]
-            e = dataset['e'][index]
-
-            calc_res = self.calculating(X)
             E += self.error(calc_res['Z'], e)
+
         print(E)
         print('Done')
         return result
@@ -106,8 +101,8 @@ class MLP:
 
                 E = 0
                 for i in range(len(dataset) - 1):
-                    X_check = dataset['x'][index]
-                    e_check = dataset['e'][index]
+                    X_check = dataset['x'][i]
+                    e_check = dataset['e'][i]
 
                     calc_res = self.calculating(X_check)
                     E += self.error(calc_res['Z'], e_check)
@@ -117,7 +112,6 @@ class MLP:
 
                 if E < constants['max_error']:
                     return 0
-                    a = 2
 
     def modifying(self, data, X, e, constants):
         gamma_k = []

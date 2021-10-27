@@ -1,6 +1,3 @@
-from Training_Report import data_transform
-
-
 class EquationsSystem:
     def __init__(self, dx_function, dy_function, dz_function):
 
@@ -52,8 +49,3 @@ class EquationsSystem:
 
     def __len__(self):
         return len(self.data['x'])
-
-
-
-
-
