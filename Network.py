@@ -30,20 +30,24 @@ class MLP:
 
     def forecasting(self, dataset, dataset_size):
         print('Forecasting...')
+        report = TR.Report()
         result = []
         E = 0
         for index in range(dataset_size):
+            report.count()
             X = dataset['x'][index]
             e = dataset['e'][index]
 
             calc_res = self.calculating(X)
             print(self.error(calc_res['Z'], e))
             result.append(calc_res['Z'])
-            E += self.error(calc_res['Z'], e)
+            e1 = self.error(calc_res['Z'], e)
+            report.add_learning_error_value(e1)
+            E += e1
 
         print(E)
         print('Done')
-        return result
+        return result, report
 
     def calculating(self, X):
         Y = []
@@ -108,7 +112,7 @@ class MLP:
                     E += self.error(calc_res['Z'], e_check)
 
                 self.report.add_learning_error_value(E)
-                print(E)
+                #print(E)
 
                 if E < constants['max_error']:
                     return 0

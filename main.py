@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     constants = {
         'alpha': 0.01,
-        'lambda': 0.9,
+        'lambda': 0.5,
         'beta': 0.99,
         'max_error': 0.000001
     }
@@ -37,13 +37,15 @@ if __name__ == '__main__':
     es = EquationsSystem(dx, dy, dz)
     data = es.calculating(2000, 0.01)
 
-    dataset = ds.EquationsSystemDataset(data, 2000, learn=0.6, test=0.4)
+    dataset = ds.EquationsSystemDataset(data, 2000)
     dataset.data_transform()
     dataset.create_sets()
 
-    model = MLP(3, 100, 3, functions)
+    model = MLP(3, 50, 3, functions)
     model.learning(dataset, constants)
-    result = model.forecasting(dataset.full_set, 2000 - 3)
+    #result, report = model.forecasting(dataset.full_set, 2000 - 3)
+
+    result, report = model.forecasting(dataset.learning_set, dataset.test_size)
 
     #visual3ds_final(data, dataset)
 
@@ -54,9 +56,11 @@ if __name__ == '__main__':
         x.append(row[0])
         y.append(row[1])
         z.append(row[2])
-
-    visual3d(x, y, z)
     visual3ds(data)
+    visual3d(x, y, z)
+    model.report.error_visual()
+    report.error_visual()
+
     #input()
 
 

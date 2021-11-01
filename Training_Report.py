@@ -1,5 +1,6 @@
 from Visualisation import visual2d
 
+
 class Report:
     def __init__(self):
         self.epoch = 0
