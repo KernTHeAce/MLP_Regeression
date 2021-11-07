@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def visual2d(row, y_name = 'data', x_name = 'time'):
+
+def visual2d(row, y_name='data', x_name='time'):
     fig1, ax1 = plt.subplots()
     t = []
     i = 0
@@ -14,6 +15,30 @@ def visual2d(row, y_name = 'data', x_name = 'time'):
         t.pop()
 
     ax1.plot(t, row)
+    ax1.grid()
+
+    ax1.set_xlabel(x_name)
+    ax1.set_ylabel(y_name)
+
+    plt.show()
+
+
+def visual2d1(row1, row2, y_name='data', x_name='time', title='title'):
+    fig1, ax1 = plt.subplots()
+    plt.title = title
+    t = []
+    i = 0
+    while i < ((len(row1) + 10) * 0.01):
+        t.append(i)
+        i += 0.01
+
+    while len(row1) != len(t):
+        t.pop()
+
+    while len(row1) != len(row2):
+        row2.pop()
+
+    ax1.plot(t, row1, '-', t, row2, ':')
     ax1.grid()
 
     ax1.set_xlabel(x_name)
@@ -56,10 +81,32 @@ def visual3ds_final(data1, data2):
 
 
 def visual3d_final(x, y, z, x1, y1, z1):
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot(x, y, z, '--', x1, y1, z1, ':', label='parametric curve')
-    plt.show()
+    ROWS = 2
+    COLUMNS = 2
+
+    # Создание файла.
+    pdf = PdfPages("Figures.pdf")
+
+    # Цикл по страницам
+    index = 0
+    for page in range(len(FUNCTIONS) // (ROWS * COLUMNS) + 1):
+        # Создаем фигуру с несколькими осями.
+        figure = plt.figure(figsize=(12, 12))
+        axes = figure.subplots(ROWS, COLUMNS)
+
+        # Цикл по строкам и столбцам
+        for row in range(ROWS):
+            for column in range(COLUMNS):
+                if index < len(FUNCTIONS):
+                    axes[row, column].plot(X, FUNCTIONS[index](X))
+
+                    index += 1
+
+        # Сохраняем страницу
+        pdf.savefig(figure)
+
+    # Сохранение файла
+    pdf.close()
 
 
 

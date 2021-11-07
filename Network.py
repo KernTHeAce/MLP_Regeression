@@ -28,26 +28,23 @@ class MLP:
 
         self.report = TR.Report()
 
-    def forecasting(self, dataset, dataset_size):
+    def fit(self, dataset, dataset_size):
         print('Forecasting...')
-        report = TR.Report()
         result = []
         E = 0
         for index in range(dataset_size):
-            report.count()
             X = dataset['x'][index]
             e = dataset['e'][index]
 
             calc_res = self.calculating(X)
-            print(self.error(calc_res['Z'], e))
             result.append(calc_res['Z'])
             e1 = self.error(calc_res['Z'], e)
-            report.add_learning_error_value(e1)
+            self.report.add_test_error_value(e1)
             E += e1
 
-        print(E)
+        #print(E)
         print('Done')
-        return result, report
+        return result, E
 
     def calculating(self, X):
         Y = []
@@ -70,33 +67,34 @@ class MLP:
 
         return {'Z': Z, 'Y': Y, 'Sy': Sy, 'Sz': Sz}
 
-    def validation(self, validation_set):
-        validation_error = 0
-        for index in len(validation_set):
-            x = validation_set[index]
-            e = validation_set[index + 1]
+    def validation(self, dataset):
+        E = 0
+        for index in range(len(dataset['x'])):
+            x = dataset['x'][index]
+            e = dataset['e'][index]
 
-            z = self.calculating(x)
+            calc_res = self.calculating(x)
 
-            for j in range(len(z)):
-                validation_error += (z['Z'][j] - e[j]) ** 2
-        return validation_error / 2
+            E += self.error(calc_res['Z'], e)
+        self.report.add_validation_error_value(E)
+        return E
 
     @staticmethod
     def error(Z, e):
         error = 0
         for j in range(len(Z)):
-            error += (Z[j] - e[j]) ** 2
+            error += (abs(Z[j] - e[j])) ** 2
         error /= 2
         return error
 
     def learning(self, data_set, constants):
         print('Network learning...')
         dataset = data_set.learning_set
+        validation_set = data_set.validation_set
 
+        epoch = 0
         while True:
-            for index in range(len(dataset) - 1):
-                self.report.count()
+            for index in range(len(dataset['x']) - 1):
                 X_train = dataset['x'][index]
                 e_train = dataset['e'][index]
 
@@ -104,7 +102,7 @@ class MLP:
                 self.modifying(calc_res, X_train, e_train, constants)
 
                 E = 0
-                for i in range(len(dataset) - 1):
+                for i in range(len(dataset['x']) - 1):
                     X_check = dataset['x'][i]
                     e_check = dataset['e'][i]
 
@@ -113,9 +111,16 @@ class MLP:
 
                 self.report.add_learning_error_value(E)
                 #print(E)
-
                 if E < constants['max_error']:
-                    return 0
+                    return 'max_error'
+
+                epoch += 1
+                if epoch > 3000:
+                    return 'epoch'
+
+                val_error = self.validation(validation_set)
+                if val_error < constants['validation_error']:
+                    return 'validation_error'
 
     def modifying(self, data, X, e, constants):
         gamma_k = []
@@ -134,7 +139,7 @@ class MLP:
 
         for j in range(self.hiddenL):
             for k in range(self.outputL):
-                gamma_j[j] = gamma_k[k] * self.d_output_layer_activation(Sy[j]) * self.W_jk[j][k]
+                gamma_j[j] += gamma_k[k] * self.d_output_layer_activation(Sy[j]) * self.W_jk[j][k]
 
         for k in range(self.outputL):
             sgd = constants['alpha'] * gamma_k[k] * self.d_output_layer_activation(Sz[k])
