@@ -110,13 +110,12 @@ class MLP:
                     E += self.error(calc_res['Z'], e_check)
 
                 self.report.add_learning_error_value(E)
-                #print(E)
+                print(E)
                 if E < constants['max_error']:
                     return 'max_error'
 
                 epoch += 1
-                if epoch > 3000:
-                    return 'epoch'
+
 
                 val_error = self.validation(validation_set)
                 if val_error < constants['validation_error']:

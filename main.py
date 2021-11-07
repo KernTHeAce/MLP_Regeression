@@ -36,7 +36,7 @@ def dz(x, y, z):
 if __name__ == '__main__':
 
     print()
-    dataset_size = 1000
+    dataset_size = 500
     step = 0.01
 
     input_size = 3
@@ -50,54 +50,55 @@ if __name__ == '__main__':
     dataset.data_transform()
     dataset.create_sets()
 
-    # constants = {
-    #     'alpha': 0.01,
-    #     'lambda': 0.0,
-    #     'beta': 0.3,
-    #     'max_error': 0.001,
-    #     'validation_error': 0.0000001
-    # }
-    # model = MLP(input_size, 15, 3, functions)
-    # response = model.learning(dataset, constants)
-    # result = model.fit(dataset.full_set, dataset_size - input_size)
-    #
-    # x = [row[0] for row in result]
-    # y = [row[1] for row in result]
-    # z = [row[2] for row in result]
-    # while len(dataset.data['x']) != len(x):
-    #     dataset.data['x'].pop()
-    #     dataset.data['y'].pop()
-    #     dataset.data['z'].pop()
-    #
-    # t = np.linspace(0, len(dataset.data['x']), len(dataset.data['x']))
-    #
-    # visual3d(x, y, z)
-    #
-    # figure = plt.figure(figsize=(12, 12))
-    # axes = figure.subplots(3, 2)
-    # axes[0, 0].plot(t, dataset.data['x'], '-', t, x, ':')
-    # axes[0, 0].grid()
-    # axes[1, 0].plot(t, dataset.data['y'], '-', t, y, ':')
-    # axes[1, 0].grid()
-    # axes[2, 0].plot(t, dataset.data['z'], '-', t, z, ':')
-    # axes[2, 0].grid()
-    #
-    # val_list = model.report.square_validation_error_list
-    # t = np.linspace(0, len(val_list), len(val_list))
-    # axes[0, 1].plot(t, val_list)
-    # axes[0, 1].grid()
-    #
-    # learn_list = model.report.square_learning_error_list
-    # t = np.linspace(0, len(learn_list), len(learn_list))
-    # axes[1, 1].plot(t, learn_list)
-    # axes[1, 1].grid()
-    #
-    # test_list = model.report.square_test_error_list
-    # t = np.linspace(0, len(test_list), len(test_list))
-    # axes[2, 1].plot(t, test_list)
-    # axes[2, 1].grid()
-    #
-    # plt.show()
+    constants = {
+        'alpha': 0.01,
+        'lambda': 0.0,
+        'beta': 0.555,
+        'max_error': 0.01,
+        'validation_error': 0.000001
+    }
+    model = MLP(input_size, 15, 3, functions)
+    response = model.learning(dataset, constants)
+    result, E = model.fit(dataset.full_set, dataset_size - input_size)
+    print(response)
+
+    x = [row[0] for row in result]
+    y = [row[1] for row in result]
+    z = [row[2] for row in result]
+    while len(dataset.data['x']) != len(x):
+        dataset.data['x'].pop()
+        dataset.data['y'].pop()
+        dataset.data['z'].pop()
+
+    t = np.linspace(0, len(dataset.data['x']), len(dataset.data['x']))
+
+    visual3d(x, y, z)
+
+    figure = plt.figure(figsize=(12, 12))
+    axes = figure.subplots(3, 2)
+    axes[0, 0].plot(t, dataset.data['x'], '-', t, x, ':')
+    axes[0, 0].grid()
+    axes[1, 0].plot(t, dataset.data['y'], '-', t, y, ':')
+    axes[1, 0].grid()
+    axes[2, 0].plot(t, dataset.data['z'], '-', t, z, ':')
+    axes[2, 0].grid()
+
+    val_list = model.report.square_validation_error_list
+    t = np.linspace(0, len(val_list), len(val_list))
+    axes[0, 1].plot(t, val_list)
+    axes[0, 1].grid()
+
+    learn_list = model.report.square_learning_error_list
+    t = np.linspace(0, len(learn_list), len(learn_list))
+    axes[1, 1].plot(t, learn_list)
+    axes[1, 1].grid()
+
+    test_list = model.report.square_test_error_list
+    t = np.linspace(0, len(test_list), len(test_list))
+    axes[2, 1].plot(t, test_list)
+    axes[2, 1].grid()
+
+    plt.show()
 
     # beta1 = np.linspace(0, 0.999, num=10)
     # lambda1 = np.linspace(0, 0.999, num=10)

@@ -44,8 +44,9 @@ class EquationsSystemDataset(DataSet):
         self.size = size
 
     def create_sets(self):
-        self.validation_set = self.__create_sets(self.data, self.validation_size, 0)
-        self.learning_set = self.__create_sets(self.data, self.learn_size, self.validation_size)
+        self.learning_set = self.__create_sets(self.data, self.learn_size, 0)
+        self.validation_set = self.__create_sets(self.data, self.validation_size, self.learn_size)
+
         self.test_set = self.__create_sets(self.data, self.test_size, self.validation_size + self.learn_size)
 
         self.full_set = self.__create_sets(self.data, self.size - self.input_size, 0)
