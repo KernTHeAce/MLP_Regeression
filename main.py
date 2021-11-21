@@ -26,7 +26,7 @@ if __name__ == '__main__':
     es = EquationsSystem(dx, dy, dz)
     data = es.calculating(dataset_size, step)
 
-    dataset = ds.EquationsSystemDataset(data, dataset_size, input_size=input_size)
+    dataset = ds.EquationsSystemDataset(data, dataset_size, input_size=input_size, learn=0.25, validation=0.05)
     dataset.data_transform()
     dataset.create_sets()
     Visual.visual_data(dataset)
