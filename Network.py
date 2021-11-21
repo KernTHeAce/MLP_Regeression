@@ -18,7 +18,7 @@ class MLP:
         self.hiddenL = hidden_layer
         self.outputL = output_layer
 
-        border = 1 / (hidden_layer) ** 0.5
+        border = 1 / (hidden_layer ** 0.5)
         self.W_ij = [[uniform(-1 * border, border) for j in range(hidden_layer)] for i in range(input_layer)]
         self.W_jk = [[uniform(-1 * border, border) for k in range(output_layer)] for j in range(hidden_layer)]
         self.W_ij_past = copy.deepcopy(self.W_ij)
@@ -42,7 +42,6 @@ class MLP:
             self.report.add_test_error_value(e1)
             E += e1
 
-        #print(E)
         print('Done')
         return result, E
 
@@ -115,7 +114,6 @@ class MLP:
                     return 'max_error'
 
                 epoch += 1
-
 
                 val_error = self.validation(validation_set)
                 if val_error < constants['validation_error']:
