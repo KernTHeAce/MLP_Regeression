@@ -119,9 +119,19 @@ class MLP:
                 if val_error < constants['validation_error']:
                     return 'validation_error'
 
+    @staticmethod
+    def adaptive_alpha(constants, data):
+        if constants['output alpha'] == 0:
+            temp = 0
+            for item in data['Y']:
+                temp += item ** 2
+            constants['output alpha'] = temp
+
     def modifying(self, data, X, e, constants):
         gamma_k = []
         gamma_j = [0] * self.hiddenL
+
+        self.adaptive_alpha(constants, data)
 
         Z = data['Z']
         Y = data['Y']

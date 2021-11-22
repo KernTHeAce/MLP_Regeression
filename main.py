@@ -31,7 +31,8 @@ if __name__ == '__main__':
     dataset.create_sets()
     Visual.visual_data(dataset)
     constants = {
-        'alpha': 0.01,
+        'output alpha': 0.0,
+        'hidden alpha': 0.01,
         'lambda': 0.0,
         'beta': 0.666,
         'max_error': 0.1,
@@ -47,6 +48,3 @@ if __name__ == '__main__':
     print('learning error: {0}     full error: {1}'.format(E1, E))
     Visual.visual_res(dataset, result, 'forecasting')
     Visual.visual_res(dataset, result1, 'approximation')
-
-
-
