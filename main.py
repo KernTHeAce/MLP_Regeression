@@ -5,16 +5,17 @@ from Activations import functions as func
 import Visualisation as Visual
 
 
+
 def dx(x, y, z):
-    return 10 * (y - x)
+    return y
 
 
 def dy(x, y, z):
-    return 28 * x - y - x * z
+    return z
 
 
 def dz(x, y, z):
-    return y * x - 8/3 * z
+    return -2.5 * z + y ** 2 - x
 
 
 if __name__ == '__main__':
@@ -31,15 +32,23 @@ if __name__ == '__main__':
     dataset.create_sets()
     Visual.visual_data(dataset)
     constants = {
-        'output alpha': 0.0,
+        'alpha': 0.01,
         'hidden alpha': 0.01,
         'lambda': 0.0,
-        'beta': 0.666,
+        'beta': 0.333,
+        'hidden lambda': 0.0,
+        'hidden beta': 0.333,
         'max_error': 0.1,
-        'validation_error': 0.0005
+        'max_first_step_error': 27,
+        'max_second_step_error': 10,
+        'validation_error': 0.01
     }
 
-    model = MLP(input_size, 15, 3, functions)
+
+
+    model = MLP(input_size, 18, 3, functions)
+    # model.step_by_step_training(dataset, constants)
+
     response = model.learning(dataset, constants)
     result1, E1 = model.fit(dataset.learning_set, dataset.learn_size)
     result, E = model.fit(dataset.full_set, dataset_size - input_size)

@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.pyplot as plt
 
 
 def visual2d(row, y_name='data', x_name='time'):
@@ -98,3 +101,71 @@ def visual_data(dataset, title='dataset'):
     axes[2, 1].grid()
 
     plt.show()
+
+def to_file(model, dataset, dataset_size, input_size):
+    beta1 = np.linspace(0, 0.999, num=10)
+    lambda1 = np.linspace(0, 0.999, num=10)
+    path = 'for_andrey.pdf'
+    pdf = PdfPages(path)
+    i = 0
+
+    for beta in beta1:
+
+        constants = {
+            'alpha': 0.01,
+            'lambda': 0,
+            'beta': beta,
+            'max_error': 0.001,
+            'validation_error': 0.000001
+        }
+        print(str(i))
+        i += 1
+        response = model.learning(dataset, constants)
+        result, E = model.fit(dataset.full_set, dataset_size - dataset.input_size)
+
+
+
+        x = [row[0] for row in result]
+        y = [row[1] for row in result]
+        z = [row[2] for row in result]
+
+        while len(dataset.data['x']) != len(x):
+            dataset.data['x'].pop()
+            dataset.data['y'].pop()
+            dataset.data['z'].pop()
+
+        # Создаем фигуру с несколькими осями.
+        figure = plt.figure(figsize=(12, 12))
+        axes = figure.subplots(3, 2)
+
+        line = 'beta: {}   '.format(beta)
+        suptitle = figure.suptitle(line)
+
+        t = np.linspace(0, len(dataset.data['x']), len(dataset.data['x']))
+
+        axes[0, 0].plot(t, dataset.data['x'], '-', t, x, ':')
+        axes[0, 0].grid()
+        axes[1, 0].plot(t, dataset.data['y'], '-', t, y, ':')
+        axes[1, 0].grid()
+        axes[2, 0].plot(t, dataset.data['z'], '-', t, z, ':')
+        axes[2, 0].grid()
+
+        val_list = model.report.square_validation_error_list
+        t = np.linspace(0, len(val_list), len(val_list))
+        axes[0, 1].plot(t, val_list)
+        axes[0, 1].grid()
+
+        learn_list = model.report.square_learning_error_list
+        t = np.linspace(0, len(learn_list), len(learn_list))
+        axes[1, 1].plot(t, learn_list)
+        axes[1, 1].grid()
+
+        test_list = model.report.square_test_error_list
+        t = np.linspace(0, len(test_list), len(test_list))
+        axes[2, 1].plot(t, test_list)
+        axes[2, 1].grid()
+        # Сохраняем страницу
+        pdf.savefig(figure)
+
+    print(path)
+    pdf.close()
