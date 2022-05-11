@@ -30,7 +30,7 @@ if __name__ == '__main__':
     dataset = ds.EquationsSystemDataset(data, dataset_size, input_size=input_size, learn=0.25, validation=0.05)
     dataset.data_transform()
     dataset.create_sets()
-    Visual.visual_data(dataset)
+    # Visual.visual_data(dataset)
     constants = {
         'alpha': 0.01,
         'hidden alpha': 0.01,

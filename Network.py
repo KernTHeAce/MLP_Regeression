@@ -182,7 +182,7 @@ class MLP(Perseptron):
             Sz[k] -= self.T_k[k]
             Z.append(self.outputL_activation(Sz[k]))
 
-        return {'Z': Z, 'output': Y, 'Sy': Sy, 'S_output': Sz}
+        return {'output': Z, 'Y': Y, 'Sy': Sy, 'S_output': Sz}
 
     def learning(self, data_set, constants):
         print('Network learning...')
@@ -231,8 +231,8 @@ class MLP(Perseptron):
 
         # self.adaptive_alpha(constants, data)
 
-        Z = data['Z']
-        Y = data['output']
+        Z = data['output']
+        Y = data['Y']
         Sy = data['Sy']
         Sz = data['S_output']
 
